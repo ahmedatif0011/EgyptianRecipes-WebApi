@@ -7,13 +7,17 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\App.Domain\App.Domain.csproj" />
-    <ProjectReference Include="..\App.Infrastructure\App.Infrastructure.csproj" />
+    <Compile Remove="Helper\**" />
+    <Compile Remove="Services\**" />
+    <EmbeddedResource Remove="Helper\**" />
+    <EmbeddedResource Remove="Services\**" />
+    <None Remove="Helper\**" />
+    <None Remove="Services\**" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Helper\" />
-    <Folder Include="Services\" />
+    <ProjectReference Include="..\App.Domain\App.Domain.csproj" />
+    <ProjectReference Include="..\App.Infrastructure\App.Infrastructure.csproj" />
   </ItemGroup>
 
   <ItemGroup>

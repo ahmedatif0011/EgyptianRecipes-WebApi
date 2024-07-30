@@ -11,42 +11,22 @@ namespace App.Core.Handler.Branches.UpdateBranch
     {
         public UpdateBranchValidation()
         {
-            RuleFor(c => c.Title).MaximumLength(200).WithMessage("{PropertyName} : can not be more than 200 chars");
-            RuleFor(c => c.ManagerName).MaximumLength(250).WithMessage("{PropertyName} : can not be more than 250 chars");
+            //Title
+            RuleFor(c => c.Title).NotEmpty().WithMessage("The 'Title' field is required.");
+            RuleFor(c => c.Title).MaximumLength(200).WithMessage("'Title' can not be more than 200 chars");
 
-            RuleFor(c => c)
-                .Must(c => c.ClosingHour > c.OpenningHour)
-                .WithMessage("Closing Hour must be later than the Opening Hour.");
+            //Manager Name
+            RuleFor(c => c.ManagerName).NotEmpty().WithMessage("The 'ManagerName field' is required.");
+            RuleFor(c => c.ManagerName).MaximumLength(250).WithMessage("'Manager Name' can not be more than 250 chars");
 
-            RuleFor(c => c)
-                .Must(CheckWorkingTime)
-                .WithMessage("Working Hours must be a valid time span more than 30 minutes.");
+            //Opening Hour
+            RuleFor(c => c.OpenningHour).LessThan(new TimeSpan(23, 30, 0)).WithMessage("The 'Opening Hour' field can not be more than '23:30'");
 
-            RuleFor(c => c.OpenningHour)
-            .Must(BeValidTimeSpan)
-            .WithMessage("Opening Hour must be a valid time span in 30 minutes interval between 00:00 and 23:30.");
+            //Closing Hour
+            RuleFor(c => c.ClosingHour).LessThan(new TimeSpan(23, 30, 0)).WithMessage("The 'Closing Hour' field can not be more than '23:30'");
+            RuleFor(c => c.ClosingHour).GreaterThan(c => c.OpenningHour).WithMessage("'Closing Hour' must be later than the Opening Hour.");
+            RuleFor(c => c.ClosingHour).Must((c, closingHour) => (closingHour - c.OpenningHour).TotalMinutes >= 30).WithMessage("The 'Closing hour' must be at least 30 minutes after the opening hour.");
 
-            RuleFor(c => c.ClosingHour)
-                .Must(BeValidTimeSpan)
-                .WithMessage("Closing Hour must be a valid time span in 30 minutes interval between 00:00 and 23:30.");
-
-            
-        }
-        private bool CheckWorkingTime(ModifyBrancheRequest request)
-        {
-            var workingTime = request.ClosingHour - request.OpenningHour;
-            if (workingTime.TotalMinutes < 30)
-                return false;
-
-            return true;
-        }
-        private bool BeValidTimeSpan(TimeSpan time)
-        {
-            // Check if the time is between 00:00 and 23:30
-            if (time < new TimeSpan(0, 0, 0) || time > new TimeSpan(23, 30, 0))
-                return false;
-
-            return true;
         }
     }
 }

@@ -22,8 +22,7 @@ builder.Services.AddSwaggerGen();
 ServicesDI.AddApplicationDI(builder.Services);
 AppDI.AddInfrastructureDI(builder.Services,builder.Configuration);
 
-builder.Services.AddFluentValidation();
-builder.Services.AddValidatorsFromAssemblyContaining<IAssemblyMarker>();
+
 
 builder.Services.AddSwaggerGen(options =>
 {
